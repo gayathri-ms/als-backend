@@ -32,4 +32,15 @@ router.post("/addvehicle/:userId", isSignedIn, isAuthenticated, (req, res) => {
   });
 });
 
+router.get("/getall/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  Vehicle.find().exec((err, data) => {
+    if (err || !data) {
+      return res.status(400).json({
+        err: "No details was found in DB",
+      });
+    }
+    res.json(data);
+  });
+});
+
 module.exports = router;

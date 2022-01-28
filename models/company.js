@@ -21,4 +21,4 @@ const company_schema = new mongoose.Schema({
   fixed_date: String,
 });
 
-module.exports = mongoose.model("company", company_schema);
+module.exports = mongoose.model("company_als", company_schema);

@@ -9,7 +9,7 @@ const router = express.Router();
 const Company = require("../models/company");
 router.param("userId", getUserById);
 
-router.post("/addcompany/:userId", isSignedIn, isAuthenticated, (req, res) => {
+router.post("/addcompany/:userId", (req, res) => {
   console.log("  inside add");
   const date = new Date(req.body.fixed_date);
   var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -32,6 +32,33 @@ router.post("/addcompany/:userId", isSignedIn, isAuthenticated, (req, res) => {
       return res.status(400).json({ err: "cannot save the data" });
     }
     res.json(com);
+  });
+});
+
+router.get(
+  "/getallcompany/:userId",
+  isSignedIn,
+  isAuthenticated,
+  (req, res) => {
+    Company.find().exec((err, data) => {
+      if (err) {
+        return res.status(400).json({ err: "No Details found" });
+      }
+      res.json(data);
+    });
+  }
+);
+
+router.get("/getrate/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  const company_name = req.body.company_name;
+  Company.find({ company_name: company_name }).exec((err, data) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ err: "Company Name not found in Database" });
+    }
+    console.log("company rate", data.rate);
+    res.json(data);
   });
 });
 
