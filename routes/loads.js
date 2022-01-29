@@ -59,10 +59,71 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
     loads.save((err, l) => {
       if (err) {
-        return res.status(400).json({ error: err });
+        return res.status(400).json({ error: "Error in the Form" });
       }
       res.json(l);
     });
+  });
+});
+
+router.put("/updateload/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  const { invoice, amt, acc_holder } = req.body;
+
+  const date = new Date();
+  var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+  const month = dateObj.getMonth() + 1;
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  const year = dateObj.getFullYear();
+  const output = day + "-" + month + "-" + year;
+
+  Loads.find({ invoice: invoice }).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({ err: "Failed to Updated" });
+    }
+    console.log("data", data[0]._id);
+    let amount = data[0].amt_received;
+    amount = Number(amount) + Number(amt);
+    let balance = data[0].grandtotal - Number(amount);
+    console.log(
+      "balance",
+      balance,
+      " amount",
+      amount,
+      " output",
+      output,
+      " acc",
+      acc_holder
+    );
+    Loads.findByIdAndUpdate(
+      { _id: data[0]._id },
+      {
+        $set: {
+          amt_received: amount,
+          balance: balance,
+          acc_holder: acc_holder,
+          date_received: output,
+        },
+      },
+      { new: true, useFindAndModify: false },
+      (err, item) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Failed to Update the data ",
+          });
+        }
+        res.json(item);
+      }
+    );
+  });
+});
+
+router.get("/getall/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  Loads.find().exec((err, data) => {
+    if (err) {
+      return res.status(400).json({ err: "No Data Found" });
+    }
+    res.json(data);
   });
 });
 
