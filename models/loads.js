@@ -15,6 +15,10 @@ const load_schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  address: {
+    type: String,
+    required: true,
+  },
   due_date: Date,
   dateformat: String,
   rate: {

@@ -10,8 +10,17 @@ const Loads = require("../models/loads");
 router.param("userId", getUserById);
 
 router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
-  const { vehicle_no, rate, company, no_loads, delivery, extras, gst, gstamt } =
-    req.body;
+  const {
+    vehicle_no,
+    rate,
+    company,
+    address,
+    no_loads,
+    delivery,
+    extras,
+    gst,
+    gstamt,
+  } = req.body;
 
   const date = new Date();
   var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -45,6 +54,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       date: dateObj,
       vehicle_no: vehicle_no,
       company: company,
+      address: address,
       due_date: duelocal,
       dateformat: output,
       rate: rate,
