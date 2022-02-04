@@ -177,6 +177,7 @@ router.get("/payment/:userId", isSignedIn, isAuthenticated, (req, res) => {
       res.status(400).json({ err: err });
     });
 });
+
 router.get("/duedate/:userId", isSignedIn, isAuthenticated, (req, res) => {
   let date = new Date();
   Loads.find().exec((err, data) => {

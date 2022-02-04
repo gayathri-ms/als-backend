@@ -13,6 +13,8 @@ const bodyParser = require("body-parser");
 const companyRouter = require("./routes/company");
 const vehicleRouter = require("./routes/vehicle");
 const loadRouter = require("./routes/loads");
+const spareRouter = require("./routes/spares");
+const dieselRouter = require("./routes/diesel");
 
 var app = express();
 
@@ -33,6 +35,8 @@ app.use("/users", usersRouter);
 app.use("/company", companyRouter);
 app.use("/vehicle", vehicleRouter);
 app.use("/load", loadRouter);
+app.use("/spare", spareRouter);
+app.use("/diesel", dieselRouter);
 
 mongoose
   .connect("mongodb://localhost:27017/test")
