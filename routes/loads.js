@@ -15,6 +15,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
     rate,
     company,
     address,
+    phone_no,
     no_loads,
     delivery,
     extras,
@@ -55,6 +56,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       vehicle_no: vehicle_no,
       company: company,
       address: address,
+      phone_no: phone_no,
       due_date: duelocal,
       dateformat: output,
       rate: rate,
@@ -65,6 +67,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       gstamt: gstamt,
       grandtotal: grandtotal,
       total: total,
+      balance: grandtotal,
     });
 
     loads.save((err, l) => {
@@ -134,6 +137,56 @@ router.get("/getall/:userId", isSignedIn, isAuthenticated, (req, res) => {
       return res.status(400).json({ err: "No Data Found" });
     }
     res.json(data);
+  });
+});
+
+router.get("/total/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  let sum = 0;
+  Loads.find().exec((err, users) => {
+    if (err || !users) {
+      return res.status(400).json({
+        error: "no user was found in DB",
+      });
+    }
+    console.log(users);
+    users.map((item, i) => {
+      console.log("balance", item.balance);
+      if (item.balance) sum = sum + Number(item.balance);
+    });
+    console.log("total", sum);
+    res.json({ total: sum });
+  });
+});
+
+router.get("/payment/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  Loads.aggregate([
+    {
+      $group: {
+        _id: { company: "$company" },
+
+        balance: { $sum: "$balance" },
+      },
+    },
+  ])
+    .then((result) => {
+      console.log(result);
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log("error");
+      res.status(400).json({ err: err });
+    });
+});
+router.get("/duedate/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  let date = new Date();
+  Loads.find().exec((err, data) => {
+    if (err || !data) {
+      return res.status(400).json({
+        error: "no user was found in DB",
+      });
+    }
+    let users = data.filter((d) => d.due_date <= date && d.balance !== 0);
+    res.json(users);
   });
 });
 
