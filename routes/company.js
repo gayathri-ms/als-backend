@@ -9,7 +9,7 @@ const router = express.Router();
 const Company = require("../models/company");
 router.param("userId", getUserById);
 
-router.post("/addcompany/:userId", (req, res) => {
+router.post("/addcompany/:userId", isSignedIn, isAuthenticated, (req, res) => {
   console.log("  inside add");
   const date = new Date(req.body.fixed_date);
   var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);

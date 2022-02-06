@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const diesel_schema = new mongoose.Schema({
+const petrol_schema = new mongoose.Schema({
   invoice: {
     type: Number,
     unique: true,
@@ -31,4 +31,4 @@ const diesel_schema = new mongoose.Schema({
   kmpl: Number,
 });
 
-module.exports = mongoose.model("Diesel1", diesel_schema);
+module.exports = mongoose.model("Petrol", petrol_schema);

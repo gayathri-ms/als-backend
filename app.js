@@ -15,6 +15,9 @@ const vehicleRouter = require("./routes/vehicle");
 const loadRouter = require("./routes/loads");
 const spareRouter = require("./routes/spares");
 const dieselRouter = require("./routes/diesel");
+const petrolRouter = require("./routes/petrol");
+const insuranceRouter = require("./routes/insurance");
+const fcRouter = require("./routes/fc");
 
 var app = express();
 
@@ -37,6 +40,9 @@ app.use("/vehicle", vehicleRouter);
 app.use("/load", loadRouter);
 app.use("/spare", spareRouter);
 app.use("/diesel", dieselRouter);
+app.use("/petrol", petrolRouter);
+app.use("/insurance", insuranceRouter);
+app.use("/fc", fcRouter);
 
 mongoose
   .connect("mongodb://localhost:27017/test")

@@ -6,10 +6,10 @@ const {
 } = require("../controllers/auth");
 const router = express.Router();
 
-const Diesel = require("../models/diesel");
+const Petrol = require("../models/petrol");
 router.param("userId", getUserById);
 
-router.post("/add_diesel/:userId", isSignedIn, isAuthenticated, (req, res) => {
+router.post("/add_petrol/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const { rate, no_ltrs, vehicle_no, present_km } = req.body;
   const date = new Date();
   var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -22,7 +22,7 @@ router.post("/add_diesel/:userId", isSignedIn, isAuthenticated, (req, res) => {
   let total = rate * no_ltrs;
   let pre_km = 0;
   var maxi = 0;
-  Diesel.find().exec((err, user) => {
+  Petrol.find().exec((err, user) => {
     if (err) {
       return res.status(400).json({ error: "No user Found" });
     }
@@ -32,7 +32,7 @@ router.post("/add_diesel/:userId", isSignedIn, isAuthenticated, (req, res) => {
     if (detail !== [] && detail[0].present_km !== undefined)
       pre_km = (present_km - detail[0].present_km) / no_ltrs;
 
-    const diesel = new Diesel({
+    const petrol = new Petrol({
       invoice: maxi + 1,
       date: date,
       dateFormat: output,
@@ -44,7 +44,7 @@ router.post("/add_diesel/:userId", isSignedIn, isAuthenticated, (req, res) => {
       kmpl: pre_km,
     });
 
-    diesel.save((err, d) => {
+    petrol.save((err, d) => {
       if (err) {
         return res.status(400).json({ err: err });
       }
@@ -54,7 +54,7 @@ router.post("/add_diesel/:userId", isSignedIn, isAuthenticated, (req, res) => {
 });
 
 router.get("/getall/:userId", isSignedIn, isAuthenticated, (req, res) => {
-  Diesel.find().exec((err, data) => {
+  Petrol.find().exec((err, data) => {
     if (err) {
       return res.status(400).json({ err: "No Data Found" });
     }
