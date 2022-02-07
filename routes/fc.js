@@ -42,7 +42,8 @@ router.post("/addFC/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
     const fc = new FC({
       invoice: maxi + 1,
-      date: output,
+      date: date,
+      dateformat: output,
       vehicle_no: vehicle_no,
       expenses: expenses,
       broker_name: broker_name,
@@ -57,5 +58,12 @@ router.post("/addFC/:userId", isSignedIn, isAuthenticated, (req, res) => {
     });
   });
 });
-
+router.get("/getall/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  FC.find().exec((err, data) => {
+    if (err) {
+      return res.status(400).json({ err: "No Data Found" });
+    }
+    res.json(data);
+  });
+});
 module.exports = router;

@@ -57,7 +57,8 @@ router.post(
 
       const insurance = new Insurance({
         invoice: maxi + 1,
-        date: output,
+        date: date,
+        dateformat: output,
         vehicle_no: vehicle_no,
         amount: amount,
         company_name: company_name,
@@ -76,5 +77,13 @@ router.post(
     });
   }
 );
+router.get("/getall/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  Insurance.find().exec((err, data) => {
+    if (err) {
+      return res.status(400).json({ err: "No Data Found" });
+    }
+    res.json(data);
+  });
+});
 
 module.exports = router;

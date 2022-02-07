@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const FC_schema = new mongoose.Schema({
   date: Date,
+  dateformat: String,
   invoice: Number,
   vehicle_no: {
     type: String,
