@@ -7,6 +7,8 @@ const {
 const router = express.Router();
 
 const Loads = require("../models/loads");
+const Company = require("../models/company");
+
 router.param("userId", getUserById);
 
 router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
@@ -44,6 +46,21 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
     grandtotal = grandtotal + Number(total * Number(gstamt) * 0.01);
 
   var maxi = 0;
+
+  Company.find({ company_name: company }).exec((err, data) => {
+    console.log("data", data);
+    if (data.length === 0) {
+      const company1 = new Company({
+        company_name: company,
+        address: address,
+        phone: phone_no,
+        rate: rate,
+        fixed_date: output,
+      });
+      company1.save();
+    }
+  });
+
   Loads.find().exec((err, user) => {
     if (err) {
       return res.status(400).json({ error: "No user Found" });

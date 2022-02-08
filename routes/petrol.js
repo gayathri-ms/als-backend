@@ -27,11 +27,17 @@ router.post("/add_petrol/:userId", isSignedIn, isAuthenticated, (req, res) => {
       return res.status(400).json({ error: "No user Found" });
     }
     user.map((u) => (maxi = maxi < u.invoice ? u.invoice : maxi));
-    const detail = user.filter((u) => u.invoice === maxi);
-    console.log("detail", detail);
-    if (detail !== [] && detail[0].present_km !== undefined)
-      pre_km = (present_km - detail[0].present_km) / no_ltrs;
-
+    if (maxi !== 0) {
+      const detail = user.filter((u) => u.vehicle_no === vehicle_no);
+      console.log("detail", detail);
+      let inv = 0;
+      detail.map((d) => (inv = inv < d.invoice ? d.invoice : inv));
+      if (inv !== 0) {
+        let data = detail.filter((d) => d.invoice === inv);
+        if (data !== [] && data[0].present_km !== undefined)
+          pre_km = (present_km - data[0].present_km) / no_ltrs;
+      }
+    }
     const petrol = new Petrol({
       invoice: maxi + 1,
       date: date,
