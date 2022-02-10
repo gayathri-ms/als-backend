@@ -18,7 +18,8 @@ router.post("/addlabour/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const year = dateObj.getFullYear();
   const output = day + "-" + month + "-" + year;
 
-  const { labour_name, address, adv_amt, advance, phone, salary } = req.body;
+  const { labour_name, l_id, address, adv_amt, advance, phone, salary } =
+    req.body;
 
   let maxi = 0;
 
@@ -31,6 +32,7 @@ router.post("/addlabour/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
     const labour = new Labour({
       invoice: maxi + 1,
+      l_id: l_id,
       labour_name: labour_name,
       address: address,
       adv_amt: adv_amt,

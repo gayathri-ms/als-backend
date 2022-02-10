@@ -7,6 +7,8 @@ const {
 const router = express.Router();
 
 const Attendance = require("../models/attendance");
+const Labour = require("../models/labour");
+
 router.param("userId", getUserById);
 
 router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
@@ -18,7 +20,41 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const year = dateObj.getFullYear();
   const output = day + "-" + month + "-" + year;
 
-  const { labour_name, date, present, shift_time, extras } = req.body;
+  const { labour_name, l_id, present, shift_time, extras } = req.body;
+
+  Labour.find({ l_id: l_id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({ err: "Labour Not Found in DB" });
+    }
+    console.log("user,salary", user[0].salary);
+    let lab_id = user[0]._id;
+    let sal = 0;
+    if (extras !== 0) {
+      sal = Number(user[0].salary) + Number(extras);
+    } else sal = Number(user[0].salary);
+
+    if (user[0].salary_work !== undefined) {
+      sal = sal + user[0].salary_work;
+    }
+
+    console.log("sal", sal);
+    Labour.findByIdAndUpdate(
+      { _id: lab_id },
+      {
+        $set: {
+          salary_work: sal,
+        },
+      },
+      { new: true, useFindAndModify: false },
+      (err, item) => {
+        if (err) {
+          return res.status(400).json({
+            error: "your cant update this Item ",
+          });
+        }
+      }
+    );
+  });
 
   let maxi = 0;
 
@@ -31,7 +67,7 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
     const attendance = new Attendance({
       invoice: maxi + 1,
-      labour_name: labour_name,
+      labour: labour_name,
       date: output,
       present: present,
       shift_time: shift_time,
@@ -39,9 +75,7 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
     });
     attendance.save((err, com) => {
       if (err) {
-        return res
-          .status(400)
-          .json({ err: "Cannot save the details in Database" });
+        return res.status(400).json({ err: "2" + err });
       }
       res.json(com);
     });

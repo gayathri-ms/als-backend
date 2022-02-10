@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const labour_schema = new mongoose.Schema({
   invoice: Number,
+  l_id: {
+    type: String,
+    required: true,
+  },
   labour_name: {
     type: String,
     required: true,

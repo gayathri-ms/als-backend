@@ -3,9 +3,8 @@ const mongoose = require("mongoose");
 const attendance_schema = new mongoose.Schema({
   date: String,
   invoice: Number,
-  labour_name: {
+  labour: {
     type: String,
-    unique: true,
     required: true,
   },
   present: {
@@ -22,4 +21,4 @@ const attendance_schema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("attendance", attendance_schema);
+module.exports = mongoose.model("attendance1", attendance_schema);
