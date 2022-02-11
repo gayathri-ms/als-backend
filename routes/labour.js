@@ -61,4 +61,17 @@ router.get("/getallLabour/:userId", isSignedIn, isAuthenticated, (req, res) => {
   });
 });
 
+router.delete("/deleteAll/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  Labour.remove((err, labor) => {
+    if (err) {
+      res.status(400).json({
+        error: "failed to delete the product",
+      });
+    }
+    res.json({
+      message: "deletion is succesful",
+      labor,
+    });
+  });
+});
 module.exports = router;

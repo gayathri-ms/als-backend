@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const attendance_schema = new mongoose.Schema({
   date: String,
   invoice: Number,
+  lab_id: String,
   labour: {
     type: String,
     required: true,

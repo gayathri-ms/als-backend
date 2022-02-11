@@ -25,7 +25,10 @@ const labour_schema = new mongoose.Schema({
     required: true,
   },
   joined_date: String,
-  salary_work: Number,
+  salary_work: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("labour_als", labour_schema);
