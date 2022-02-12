@@ -20,6 +20,7 @@ const insuranceRouter = require("./routes/insurance");
 const fcRouter = require("./routes/fc");
 const labourRouter = require("./routes/labour");
 const attendanceRouter = require("./routes/attendance");
+const extrasRouter = require("./routes/extrasSalary");
 
 var app = express();
 
@@ -47,6 +48,7 @@ app.use("/insurance", insuranceRouter);
 app.use("/fc", fcRouter);
 app.use("/labour", labourRouter);
 app.use("/attendance", attendanceRouter);
+app.use("/extras", extrasRouter);
 
 mongoose
   .connect("mongodb://localhost:27017/test")
