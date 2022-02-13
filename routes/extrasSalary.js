@@ -83,18 +83,13 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
   });
 });
 
-router.get(
-  "/getallcompany/:userId",
-  isSignedIn,
-  isAuthenticated,
-  (req, res) => {
-    Company.find().exec((err, data) => {
-      if (err) {
-        return res.status(400).json({ err: "No Details found" });
-      }
-      res.json(data);
-    });
-  }
-);
+router.get("/getallextras/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  Extras.find().exec((err, data) => {
+    if (err) {
+      return res.status(400).json({ err: "No Details found" });
+    }
+    res.json(data);
+  });
+});
 
 module.exports = router;

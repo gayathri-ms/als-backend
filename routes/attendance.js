@@ -12,8 +12,8 @@ const Labour = require("../models/labour");
 router.param("userId", getUserById);
 
 router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
-  const date = new Date();
-  var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  const dateObj = new Date();
+  // var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
   const month = dateObj.getMonth() + 1;
   const day = String(dateObj.getDate()).padStart(2, "0");
