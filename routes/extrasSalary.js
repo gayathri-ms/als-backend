@@ -25,15 +25,15 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
   let extra = 0;
   let tot_salary = 0;
 
-  if (no_labour === "2") extra = 50;
-  else if (no_labour === "3") extra = 30;
+  if (Number(no_labour) === 2) extra = 50;
+  else if (Number(no_labour) === 3) extra = 30;
 
   tot_salary = Number(no_loads) * Number(extra);
 
   Labour.find().exec((err, data) => {
     // let labours = [];
 
-    for (let i = 0; i < no_labour; i++) {
+    for (let i = 0; i < Number(no_labour); i++) {
       let labours = data.filter(
         (d) => d.labour_name === laboursArray[i].labour_name
       )[0];
