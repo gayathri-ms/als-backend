@@ -51,7 +51,7 @@ app.use("/attendance", attendanceRouter);
 app.use("/extras", extrasRouter);
 
 mongoose
-  .connect("mongodb://localhost:27017/test")
+  .connect(process.env.DATABASE)
   .then(() => {
     console.log("db is connected");
   })
