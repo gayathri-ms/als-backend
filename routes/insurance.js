@@ -26,11 +26,11 @@ router.post(
   isAuthenticated,
   (req, res) => {
     const date = new Date();
-    var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    // var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
-    const month = dateObj.getMonth() + 1;
-    const day = String(dateObj.getDate()).padStart(2, "0");
-    const year = dateObj.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getFullYear();
     const output = day + "-" + month + "-" + year;
 
     const {

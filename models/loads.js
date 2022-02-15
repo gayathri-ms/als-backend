@@ -47,6 +47,7 @@ const load_schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  totalGst: Number,
   grandtotal: {
     type: Number,
     default: 0,
@@ -59,7 +60,10 @@ const load_schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  acc_holder: String,
+  acc_holder: {
+    type: String,
+    default: "",
+  },
   date_received: String,
 });
 

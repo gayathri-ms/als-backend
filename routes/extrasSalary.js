@@ -40,12 +40,13 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
       let sal = Number(labours.salary_work) + tot_salary;
       console.log("salary", sal);
       console.log("l_id", labours.l_id);
-
+      var loads = labours.no_loads + Number(no_loads);
       Labour.findByIdAndUpdate(
         { _id: labours._id },
         {
           $set: {
             salary_work: sal,
+            no_loads: loads,
           },
         },
         { new: true, useFindAndModify: false },

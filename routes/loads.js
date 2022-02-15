@@ -26,7 +26,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
   } = req.body;
 
   const date = new Date();
-  var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  // var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
   const month = date.getMonth() + 1;
   const day = String(date.getDate()).padStart(2, "0");
@@ -46,6 +46,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
     grandtotal = grandtotal + Number(total * Number(gstamt) * 0.01);
 
   var maxi = 0;
+  var totalGst = Number(grandtotal) - Number(total);
 
   Company.find({ company_name: company }).exec((err, data) => {
     console.log("data", data);
@@ -82,6 +83,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       extras: extras,
       gst: gst,
       gstamt: gstamt,
+      totalGst: totalGst,
       grandtotal: grandtotal,
       total: total,
       balance: grandtotal,

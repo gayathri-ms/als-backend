@@ -5,6 +5,7 @@ const labour_schema = new mongoose.Schema({
   l_id: {
     type: String,
     required: true,
+    unique: true,
   },
   labour_name: {
     type: String,
@@ -26,6 +27,14 @@ const labour_schema = new mongoose.Schema({
   },
   joined_date: String,
   salary_work: {
+    type: Number,
+    default: 0,
+  },
+  no_loads: {
+    type: Number,
+    default: 0,
+  },
+  no_days: {
     type: Number,
     default: 0,
   },

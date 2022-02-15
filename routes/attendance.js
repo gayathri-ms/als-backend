@@ -36,13 +36,14 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
       if (user[0].salary_work !== undefined) {
         sal = sal + user[0].salary_work;
       }
-
+      var days = user[0].no_days + 1;
       console.log("sal", sal);
       Labour.findByIdAndUpdate(
         { _id: lab_id },
         {
           $set: {
             salary_work: sal,
+            no_days: days,
           },
         },
         { new: true, useFindAndModify: false },
