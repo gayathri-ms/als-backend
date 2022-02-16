@@ -7,7 +7,24 @@ const {
 const router = express.Router();
 
 const Labour = require("../models/labour");
+const MonthlySalary = require("../models/monthlySalary");
+
 router.param("userId", getUserById);
+
+const monthName = [
+  "January",
+  "Febraury",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 router.post("/addlabour/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const date = new Date();
@@ -48,6 +65,63 @@ router.post("/addlabour/:userId", isSignedIn, isAuthenticated, (req, res) => {
           .json({ err: "Cannot save the details in Database" });
       }
       res.json(com);
+    });
+  });
+});
+
+router.put("/updatedExtra/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  const date = new Date();
+  var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  const month = dateObj.getMonth() + 1;
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  const year = dateObj.getFullYear();
+  const output = day + "-" + month + "-" + year;
+
+  const { l_id, salary, labour_name } = req.body;
+
+  Labour.find().exec((err, data) => {
+    let labours = data.filter((d) => d.l_id === l_id)[0];
+    console.log("salary_work", labours.salary_work, "salary", salary);
+    var sal = Number(labours.salary_work) - Number(salary);
+    console.log("sal", sal);
+    Labour.findByIdAndUpdate(
+      { _id: labours._id },
+      {
+        $set: {
+          salary_work: sal,
+        },
+      },
+      { new: true, useFindAndModify: false },
+      (err, item) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log("res", item);
+      }
+    );
+
+    let maxi = 0;
+    MonthlySalary.find().exec((err, data) => {
+      if (data.err) {
+        console.log(err);
+      }
+      data.map((d) => (maxi = maxi < d.invoice ? d.invoice : maxi));
+
+      const monthly_salary = new MonthlySalary({
+        invoice: maxi + 1,
+        date: date,
+        dateformat: output,
+        month: monthName[month - 1],
+        salary: salary,
+        l_id: l_id,
+        labour_name: labour_name,
+      });
+      monthly_salary.save((err, mon) => {
+        if (err) {
+          return res.status(400).json({ err: err });
+        }
+        res.json(mon);
+      });
     });
   });
 });

@@ -176,6 +176,23 @@ router.get("/total/:userId", isSignedIn, isAuthenticated, (req, res) => {
     res.json({ total: sum });
   });
 });
+router.get("/totalGst/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  let sum = 0;
+  Loads.find().exec((err, users) => {
+    if (err || !users) {
+      return res.status(400).json({
+        error: "no user was found in DB",
+      });
+    }
+    console.log(users);
+    users.map((item, i) => {
+      // console.log("balance", item.balance);
+      if (item.totalGst) sum = sum + Number(item.totalGst);
+    });
+    console.log("total", sum);
+    res.json({ totalGst: sum });
+  });
+});
 
 router.get("/payment/:userId", isSignedIn, isAuthenticated, (req, res) => {
   Loads.aggregate([
