@@ -18,8 +18,10 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
     company,
     address,
     phone_no,
-    no_loads,
-    delivery,
+    no_loads_in,
+    no_loads_out,
+    total_rate_in,
+    total_rate_out,
     extras,
     gst,
     gstamt,
@@ -37,11 +39,10 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
   date2.setDate(date.getDate() + 20);
   var duelocal = new Date(date2.getTime() - date2.getTimezoneOffset() * 60000);
 
-  var total = rate * no_loads;
+  var total = Number(total_rate_in) + Number(total_rate_out) + Number(extras);
 
-  if (delivery === "out") total = total + Number(extras);
-  else if (delivery === "in") total = total - Number(extras);
   var grandtotal = total;
+
   if (gst === "yes")
     grandtotal = grandtotal + Number(total * Number(gstamt) * 0.01);
 
@@ -78,8 +79,10 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       due_date: duelocal,
       dateformat: output,
       rate: rate,
-      no_loads: no_loads,
-      delivery: delivery,
+      no_loads_in: no_loads_in,
+      no_loads_out: no_loads_out,
+      total_rate_in: total_rate_in,
+      total_rate_out: total_rate_out,
       extras: extras,
       gst: gst,
       gstamt: gstamt,

@@ -29,12 +29,20 @@ const load_schema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  no_loads: {
+  no_loads_in: {
     type: Number,
     required: true,
   },
-  delivery: {
-    type: String,
+  no_loads_out: {
+    type: Number,
+    required: true,
+  },
+  total_rate_in: {
+    type: Number,
+    required: true,
+  },
+  total_rate_out: {
+    type: Number,
     required: true,
   },
   extras: Number,
