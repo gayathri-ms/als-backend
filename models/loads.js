@@ -7,6 +7,10 @@ const load_schema = new mongoose.Schema({
     required: true,
   },
   date: Date,
+  load_date: {
+    type: String,
+    required: true,
+  },
   vehicle_no: {
     type: String,
     required: true,

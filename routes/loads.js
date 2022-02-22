@@ -11,9 +11,21 @@ const Company = require("../models/company");
 
 router.param("userId", getUserById);
 
+const datevalue = (val) => {
+  const date = new Date(val);
+  var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+  const month = dateObj.getMonth() + 1;
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  const year = dateObj.getFullYear();
+  const output = day + "-" + month + "-" + year;
+  return output;
+};
+
 router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const {
     vehicle_no,
+    load_date,
     rate,
     company,
     address,
@@ -62,7 +74,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       company1.save();
     }
   });
-
+  var load = datevalue(load_date);
   Loads.find().exec((err, user) => {
     if (err) {
       return res.status(400).json({ error: "No user Found" });
@@ -71,6 +83,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
     const loads = new Loads({
       invoice: maxi + 1,
+      load_date: load,
       date: date,
       vehicle_no: vehicle_no,
       company: company,
