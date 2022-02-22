@@ -59,6 +59,7 @@ const load_schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  bill: String,
   totalGst: Number,
   grandtotal: {
     type: Number,

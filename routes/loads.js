@@ -37,6 +37,9 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
     extras,
     gst,
     gstamt,
+    bill,
+    amt_received,
+    acc_holder,
   } = req.body;
 
   const date = new Date();
@@ -60,6 +63,8 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
   var maxi = 0;
   var totalGst = Number(grandtotal) - Number(total);
+
+  var balance = Number(grandtotal) - Number(amt_received);
 
   Company.find({ company_name: company }).exec((err, data) => {
     console.log("data", data);
@@ -99,10 +104,14 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       extras: extras,
       gst: gst,
       gstamt: gstamt,
+      bill: bill,
       totalGst: totalGst,
       grandtotal: grandtotal,
       total: total,
-      balance: grandtotal,
+      amt_received: amt_received,
+      acc_holder: acc_holder,
+      balance: balance,
+      date_received: output,
     });
 
     loads.save((err, l) => {
