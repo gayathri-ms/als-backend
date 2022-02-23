@@ -45,4 +45,13 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
   });
 });
 
+router.get("/getAll/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  Expenses.find().exec((err, data) => {
+    if (err) {
+      return res.status(400).json({ err: "Not found in Database" });
+    }
+    res.json(data);
+  });
+});
+
 module.exports = router;
