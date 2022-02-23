@@ -29,6 +29,7 @@ const load_schema = new mongoose.Schema({
   },
   due_date: Date,
   dateformat: String,
+  month: Number,
   rate: {
     type: Number,
     required: true,

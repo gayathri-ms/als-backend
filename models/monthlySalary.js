@@ -15,6 +15,7 @@ const monthly_Salary = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  month_no: Number,
   l_id: {
     type: String,
     required: true,

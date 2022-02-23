@@ -32,6 +32,7 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
     const expense = new Expenses({
       date: output,
+      month: month,
       invoice: maxi + 1,
       reason: reason,
       amount: amount,

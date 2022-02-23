@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const expenses_schema = new mongoose.Schema({
   date: String,
+  month: Number,
   invoice: Number,
   reason: {
     type: String,

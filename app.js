@@ -23,6 +23,7 @@ const attendanceRouter = require("./routes/attendance");
 const extrasRouter = require("./routes/extrasSalary");
 const monthlySalaryRouter = require("./routes/monthlySalary");
 const expenseRouter = require("./routes/expenses");
+const monthlyIncomeRouter = require("./routes/monthlyIncome");
 
 var app = express();
 
@@ -53,6 +54,7 @@ app.use("/attendance", attendanceRouter);
 app.use("/extras", extrasRouter);
 app.use("/monthlySalary", monthlySalaryRouter);
 app.use("/expense", expenseRouter);
+app.use("/income", monthlyIncomeRouter);
 
 mongoose
   .connect(process.env.DATABASE)

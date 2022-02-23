@@ -96,6 +96,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       phone_no: phone_no,
       due_date: duelocal,
       dateformat: output,
+      month: month,
       rate: rate,
       no_loads_in: no_loads_in,
       no_loads_out: no_loads_out,

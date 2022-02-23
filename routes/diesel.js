@@ -47,6 +47,7 @@ router.post("/add_diesel/:userId", isSignedIn, isAuthenticated, (req, res) => {
       invoice: maxi + 1,
       date: date,
       dateFormat: output,
+      month: month,
       rate: rate,
       vehicle_no: vehicle_no,
       no_ltrs: no_ltrs,

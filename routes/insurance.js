@@ -59,6 +59,7 @@ router.post(
         invoice: maxi + 1,
         date: date,
         dateformat: output,
+        month: month,
         vehicle_no: vehicle_no,
         amount: amount,
         company_name: company_name,

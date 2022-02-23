@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const insurance_schema = new mongoose.Schema({
   date: Date,
   dateformat: String,
+  month: Number,
   invoice: Number,
   vehicle_no: {
     type: String,

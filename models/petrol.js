@@ -9,6 +9,7 @@ const petrol_schema = new mongoose.Schema({
     type: Date,
   },
   dateFormat: String,
+  month: Number,
   rate: {
     type: Number,
     required: true,

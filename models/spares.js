@@ -11,6 +11,7 @@ const spares_schema = new mongoose.Schema({
   },
   date: Date,
   dateFormat: String,
+  month: Number,
   rate: {
     type: Number,
     default: 0,

@@ -32,6 +32,7 @@ router.post("/addspare/:userId", isSignedIn, isAuthenticated, (req, res) => {
       name: name,
       date: date,
       dateFormat: output,
+      month: month,
       rate: rate,
       reason: reason,
       vehicle_no: vehicle_no,

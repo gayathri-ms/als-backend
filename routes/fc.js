@@ -44,6 +44,7 @@ router.post("/addFC/:userId", isSignedIn, isAuthenticated, (req, res) => {
       invoice: maxi + 1,
       date: date,
       dateformat: output,
+      month: month,
       vehicle_no: vehicle_no,
       expenses: expenses,
       broker_name: broker_name,

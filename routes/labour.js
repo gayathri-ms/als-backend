@@ -77,18 +77,20 @@ router.put("/updatedExtra/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const year = dateObj.getFullYear();
   const output = day + "-" + month + "-" + year;
 
-  const { l_id, salary, labour_name } = req.body;
+  const { l_id, salary, labour_name, adv_amt } = req.body;
 
   Labour.find().exec((err, data) => {
     let labours = data.filter((d) => d.l_id === l_id)[0];
     console.log("salary_work", labours.salary_work, "salary", salary);
     var sal = Number(labours.salary_work) - Number(salary);
+    var adv = Number(labours.adv_amt) - Number(adv_amt);
     console.log("sal", sal);
     Labour.findByIdAndUpdate(
       { _id: labours._id },
       {
         $set: {
           salary_work: sal,
+          adv_amt: adv,
         },
       },
       { new: true, useFindAndModify: false },
@@ -112,7 +114,8 @@ router.put("/updatedExtra/:userId", isSignedIn, isAuthenticated, (req, res) => {
         date: date,
         dateformat: output,
         month: monthName[month - 1],
-        salary: salary,
+        month_no: month,
+        salary: Number(salary) + Number(adv_amt),
         l_id: l_id,
         labour_name: labour_name,
       });
