@@ -123,6 +123,7 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
     expenses,
     total,
   } = check(month);
+
   let maxi = 0;
   MonthlyIncome.find().exec((err, data) => {
     if (err) console.log("error :", err);
@@ -130,7 +131,7 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
     data.map((d) => (maxi = maxi < d.invoice ? d.invoice : maxi));
 
     const monthlyIncome = new MonthlyIncome({
-      invoive: maxi + 1,
+      invoice: maxi + 1,
       month: month,
       totalIncome: totalIncome,
       totalGst: totalGst,
@@ -205,6 +206,7 @@ router.put("/update/:userId", isSignedIn, isAuthenticated, (req, res) => {
 router.get("/get/:userId", isSignedIn, isAuthenticated, (req, res) => {
   MonthlyIncome.find().exec((err, data) => {
     if (err) return res.status(400).json({ err: "No Details Found" });
+    console.log("mon_in", check(1));
     res.json(data);
   });
 });
