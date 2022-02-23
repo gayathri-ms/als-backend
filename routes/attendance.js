@@ -78,7 +78,7 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
     });
     attendance.save((err, com) => {
       if (err) {
-        return res.status(400).json({ err: "2" + err });
+        return res.status(400).json({ err: err });
       }
       res.json(com);
     });
