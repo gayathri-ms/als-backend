@@ -5,7 +5,7 @@ const monthlyIncome_schema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  month: number,
+  month: Number,
   totalIncome: Number,
   totalGst: Number,
   spares: Number,
@@ -15,7 +15,7 @@ const monthlyIncome_schema = new mongoose.Schema({
   insurance: Number,
   fc: Number,
   expenses: Number,
-  total: number,
+  total: Number,
 });
 
 module.exports = mongoose.model("monthlyIncome", monthlyIncome_schema);
