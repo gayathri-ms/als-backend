@@ -35,6 +35,35 @@ router.post("/addcompany/:userId", isSignedIn, isAuthenticated, (req, res) => {
   });
 });
 
+router.put("/update/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  const { company_name, rate, fixed_date } = req.body;
+
+  Company.find({ company_name: company_name }).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({ err: "Failed to Updated" });
+    }
+
+    Company.findByIdAndUpdate(
+      { _id: data[0]._id },
+      {
+        $set: {
+          rate: rate,
+          fixed_date: fixed_date,
+        },
+      },
+      { new: true, useFindAndModify: false },
+      (err, item) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Failed to Update the data ",
+          });
+        }
+        res.json(item);
+      }
+    );
+  });
+});
+
 router.get(
   "/getallcompany/:userId",
   isSignedIn,

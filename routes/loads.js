@@ -20,7 +20,7 @@ const datevalue = (val) => {
   const day = String(dateObj.getDate()).padStart(2, "0");
   const year = dateObj.getFullYear();
   const output = day + "-" + month + "-" + year;
-  return output;
+  return { output, month };
 };
 
 router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
@@ -67,7 +67,10 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
   var balance = Number(grandtotal) - Number(amt_received);
 
-  MonthlyIncome.find({ month: month }).exec((err, data) => {
+  var load = datevalue(load_date).output;
+  var mon = datevalue(load_date).month;
+
+  MonthlyIncome.find({ month: mon }).exec((err, data) => {
     if (err) {
       console.log("Failed to Update");
     }
@@ -95,7 +98,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
         total = total + Number(grandtotal);
         const monthlyIncome = new MonthlyIncome({
           invoice: maxim + 1,
-          month: month,
+          month: mon,
           totalIncome: grandtotal,
           totalGst: totalGst,
           total: grandtotal,
@@ -119,7 +122,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       company1.save();
     }
   });
-  var load = datevalue(load_date);
+
   Loads.find().exec((err, user) => {
     if (err) {
       return res.status(400).json({ error: "No user Found" });
@@ -136,7 +139,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
       phone_no: phone_no,
       due_date: duelocal,
       dateformat: output,
-      month: month,
+      month: mon,
       rate: rate,
       no_loads_in: no_loads_in,
       no_loads_out: no_loads_out,
@@ -215,6 +218,119 @@ router.put("/updateload/:userId", isSignedIn, isAuthenticated, (req, res) => {
     );
   });
 });
+
+router.put(
+  "/editload/:userId/:val",
+  isSignedIn,
+  isAuthenticated,
+  (req, res) => {
+    const {
+      invoice,
+      load_date,
+      month,
+      vehicle_no,
+      company,
+      address,
+      phone_no,
+      no_loads_in,
+      no_loads_out,
+      rate,
+      extras,
+      gst,
+      gstamt,
+      bill,
+      total_rate_in,
+      total_rate_out,
+      total,
+      grandtotal,
+      balance,
+      amt_received,
+      acc_holder,
+    } = req.body;
+
+    let value = req.params.val;
+    console.log("gtotal", value);
+
+    MonthlyIncome.find({ month: month }).exec((err, data) => {
+      if (err) {
+        console.log("Failed to Update");
+      }
+      if (data.length) {
+        MonthlyIncome.findByIdAndUpdate(
+          { _id: data[0]._id },
+          {
+            $set: {
+              totalIncome: data[0].totalIncome + Number(value),
+              total: data[0].total + Number(value),
+            },
+          },
+          { new: true, useFindAndModify: false },
+          (err, data) => {
+            console.log(data);
+          }
+        );
+      } else {
+        let maxim = 0;
+        let total = 0;
+        MonthlyIncome.find().exec((err, data) => {
+          if (err) console.log(err);
+          else
+            data.map((d) => (d.invoice > maxim ? (maxim = d.invoice) : maxim));
+          total = total + Number(grandtotal);
+          const monthlyIncome = new MonthlyIncome({
+            invoice: maxim + 1,
+            month: month,
+            totalIncome: value,
+            total: value,
+          });
+
+          monthlyIncome.save((err, d) => console.log(d));
+        });
+      }
+    });
+
+    Loads.find({ invoice: invoice }).exec((err, data) => {
+      if (err) {
+        return res.status(400).json({ err: "Failed to Updated" });
+      }
+
+      Loads.findByIdAndUpdate(
+        { _id: data[0]._id },
+        {
+          $set: {
+            vehicle_no: vehicle_no,
+            company: company,
+            address: address,
+            phone_no: phone_no,
+            no_loads_in: no_loads_in,
+            no_loads_out: no_loads_out,
+            rate: rate,
+            extras: extras,
+            gst: gst,
+            totalGst: gstamt,
+            bill: bill,
+            total_rate_in: total_rate_in,
+            total_rate_out: total_rate_out,
+            total: total,
+            grandtotal: grandtotal,
+            balance: balance,
+            amt_received: amt_received,
+            acc_holder: acc_holder,
+          },
+        },
+        { new: true, useFindAndModify: false },
+        (err, item) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Failed to Update the data ",
+            });
+          }
+          res.json(item);
+        }
+      );
+    });
+  }
+);
 
 router.get("/getall/:userId", isSignedIn, isAuthenticated, (req, res) => {
   Loads.find().exec((err, data) => {

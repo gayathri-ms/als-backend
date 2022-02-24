@@ -20,13 +20,13 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const year = dateObj.getFullYear();
   const output = day + "-" + month + "-" + year;
 
-  const { vehicle_no, no_loads, no_labour, laboursArray } = req.body;
+  const { vehicle_no, no_loads, no_labour, laboursArray, extra } = req.body;
 
-  let extra = 0;
+  // let extra = 0;
   let tot_salary = 0;
 
-  if (Number(no_labour) === 2) extra = 50;
-  else if (Number(no_labour) === 3) extra = 30;
+  // if (Number(no_labour) === 2) extra = 50;
+  // else if (Number(no_labour) === 3) extra = 30;
 
   tot_salary = Number(no_loads) * Number(extra);
 
