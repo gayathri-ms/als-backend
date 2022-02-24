@@ -85,8 +85,7 @@ const check = (month) => {
   });
 
   let total =
-    Number(totalIncome) +
-    Number(totalGst) -
+    Number(totalIncome) -
     Number(spares) -
     Number(diesel) -
     Number(petrol) -
@@ -206,7 +205,7 @@ router.put("/update/:userId", isSignedIn, isAuthenticated, (req, res) => {
 router.get("/get/:userId", isSignedIn, isAuthenticated, (req, res) => {
   MonthlyIncome.find().exec((err, data) => {
     if (err) return res.status(400).json({ err: "No Details Found" });
-    console.log("mon_in", check(1));
+    // console.log("mon_in", check(1));
     res.json(data);
   });
 });
