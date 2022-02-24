@@ -18,14 +18,111 @@ const MonthlyIncome = require("../models/monthlyIncome");
 
 router.param("userId", getUserById);
 
-const check = (month) => {
+// const check = (month) => {
+//   let totalIncome = 0;
+//   let totalGst = 0;
+//   console.log("month", month);
+
+//   Loads.find({ month: month }).exec((err, data) => {
+//     if (err) {
+//       console.log("error :", err);
+//     }
+//     data.map((d) => ((totalIncome += d.grandtotal), (totalGst += d.totalGst)));
+//     console.log("income", totalIncome);
+//   });
+
+//   let spares = 0;
+//   Spares.find({ month: month }).exec((err, data) => {
+//     if (err) {
+//       console.log("error :", err);
+//     }
+//     data.map((d) => (spares += d.rate));
+//   });
+
+//   let diesel = 0;
+//   Diesel.find({ month: month }).exec((err, data) => {
+//     if (err) {
+//       console.log("error :", err);
+//     }
+//     data.map((d) => (diesel += d.total_amt));
+//   });
+
+//   let petrol = 0;
+//   Petrol.find({ month: month }).exec((err, data) => {
+//     if (err) {
+//       console.log("error :", err);
+//     }
+//     data.map((d) => (petrol += d.total_amt));
+//   });
+
+//   let insurance = 0;
+//   Insurance.find({ month: month }).exec((err, data) => {
+//     if (err) {
+//       console.log("error :", err);
+//     }
+//     data.map((d) => (insurance += d.amount));
+//   });
+
+//   let fc = 0;
+//   FC.find({ month: month }).exec((err, data) => {
+//     if (err) {
+//       console.log("error :", err);
+//     }
+//     data.map((d) => (fc += d.expenses));
+//   });
+
+//   let expenses = 0;
+//   Expenses.find({ month: month }).exec((err, data) => {
+//     if (err) {
+//       console.log("error :", err);
+//     }
+//     data.map((d) => (expenses += d.amount));
+//   });
+
+//   let labourSalary = 0;
+//   MonthlySalary.find({ month_no: month }).exec((err, data) => {
+//     if (err) {
+//       console.log("error :", err);
+//     }
+//     data.map((d) => (labourSalary += d.salary));
+//   });
+
+//   let total =
+//     Number(totalIncome) -
+//     Number(spares) -
+//     Number(diesel) -
+//     Number(petrol) -
+//     Number(labourSalary) -
+//     Number(insurance) -
+//     Number(fc) -
+//     Number(expenses);
+
+//   return {
+//     totalIncome,
+//     totalGst,
+//     spares,
+//     diesel,
+//     petrol,
+//     labourSalary,
+//     insurance,
+//     fc,
+//     expenses,
+//     total,
+//   };
+// };
+
+router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
+  const month = req.body.month;
   let totalIncome = 0;
   let totalGst = 0;
+  console.log("month", month);
+
   Loads.find({ month: month }).exec((err, data) => {
     if (err) {
       console.log("error :", err);
     }
     data.map((d) => ((totalIncome += d.grandtotal), (totalGst += d.totalGst)));
+    console.log("income", totalIncome);
   });
 
   let spares = 0;
@@ -94,35 +191,6 @@ const check = (month) => {
     Number(fc) -
     Number(expenses);
 
-  return {
-    totalIncome,
-    totalGst,
-    spares,
-    diesel,
-    petrol,
-    labourSalary,
-    insurance,
-    fc,
-    expenses,
-    total,
-  };
-};
-
-router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
-  const month = req.body.month;
-  const {
-    totalIncome,
-    totalGst,
-    spares,
-    diesel,
-    petrol,
-    labourSalary,
-    insurance,
-    fc,
-    expenses,
-    total,
-  } = check(month);
-
   let maxi = 0;
   MonthlyIncome.find().exec((err, data) => {
     if (err) console.log("error :", err);
@@ -151,55 +219,118 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
   });
 });
 
-router.put("/update/:userId", isSignedIn, isAuthenticated, (req, res) => {
+router.put("/update/:userId", isSignedIn, isAuthenticated, async (req, res) => {
   const month = req.body.month;
-  const {
-    totalIncome,
-    totalGst,
-    spares,
-    diesel,
-    petrol,
-    labourSalary,
-    insurance,
-    fc,
-    expenses,
-    total,
-  } = check(month);
+  let totalIncome = 0;
+  let totalGst = 0;
+  console.log("month", month);
 
-  MonthlyIncome.find({ month: month }).exec((err, data) => {
+  await Loads.find({ month: month }).exec((err, data) => {
     if (err) {
-      return res.status(400).json({ err: "Failed to Updated" });
+      console.log("error :", err);
     }
-
-    Loads.findByIdAndUpdate(
-      { _id: data[0]._id },
-      {
-        $set: {
-          totalIncome: totalIncome,
-          totalGst: totalGst,
-          spares: spares,
-          diesel: diesel,
-          petrol: petrol,
-          labourSalary: labourSalary,
-          insurance: insurance,
-          fc: fc,
-          expenses: expenses,
-          total: total,
-        },
-      },
-      { new: true, useFindAndModify: false },
-      (err, item) => {
-        if (err) {
-          return res.status(400).json({
-            error: "Failed to Update the data ",
-          });
-        }
-        res.json(item);
-      }
-    );
+    data.map((d) => (totalIncome += d.grandtotal));
+    console.log("income", totalIncome);
   });
 
-  res.json({});
+  // let spares = 0;
+  // Spares.find({ month: month }).exec((err, data) => {
+  //   if (err) {
+  //     console.log("error :", err);
+  //   }
+  //   data.map((d) => (spares += d.rate));
+  // });
+
+  // let diesel = 0;
+  // Diesel.find({ month: month }).exec((err, data) => {
+  //   if (err) {
+  //     console.log("error :", err);
+  //   }
+  //   data.map((d) => (diesel += d.total_amt));
+  // });
+
+  // let petrol = 0;
+  // Petrol.find({ month: month }).exec((err, data) => {
+  //   if (err) {
+  //     console.log("error :", err);
+  //   }
+  //   data.map((d) => (petrol += d.total_amt));
+  // });
+
+  // let insurance = 0;
+  // Insurance.find({ month: month }).exec((err, data) => {
+  //   if (err) {
+  //     console.log("error :", err);
+  //   }
+  //   data.map((d) => (insurance += d.amount));
+  // });
+
+  // let fc = 0;
+  // FC.find({ month: month }).exec((err, data) => {
+  //   if (err) {
+  //     console.log("error :", err);
+  //   }
+  //   data.map((d) => (fc += d.expenses));
+  // });
+
+  // let expenses = 0;
+  // Expenses.find({ month: month }).exec((err, data) => {
+  //   if (err) {
+  //     console.log("error :", err);
+  //   }
+  //   data.map((d) => (expenses += d.amount));
+  // });
+
+  // let labourSalary = 0;
+  // MonthlySalary.find({ month_no: month }).exec((err, data) => {
+  //   if (err) {
+  //     console.log("error :", err);
+  //   }
+  //   data.map((d) => (labourSalary += d.salary));
+  // });
+
+  // let total =
+  //   Number(totalIncome) -
+  //   Number(spares) -
+  //   Number(diesel) -
+  //   Number(petrol) -
+  //   Number(labourSalary) -
+  //   Number(insurance) -
+  //   Number(fc) -
+  //   Number(expenses);
+
+  console.log("inc", totalIncome);
+
+  // MonthlyIncome.find({ month: month }).exec((err, data) => {
+  //   if (err) {
+  //     console.log("Failed to Updat");
+  //   }
+
+  //   Loads.findByIdAndUpdate(
+  //     { _id: data[0]._id },
+  //     {
+  //       $set: {
+  //         totalIncome: totalIncome,
+  //         totalGst: totalGst,
+  //         spares: spares,
+  //         diesel: diesel,
+  //         petrol: petrol,
+  //         labourSalary: labourSalary,
+  //         insurance: insurance,
+  //         fc: fc,
+  //         expenses: expenses,
+  //         total: total,
+  //       },
+  //     },
+  //     { new: true, useFindAndModify: false },
+  //     (err, item) => {
+  //       if (err) {
+  //         return res.status(400).json({ err: err });
+  //       }
+  //       res.json(item);
+  //     }
+  //   );
+  // });
 });
 
 router.get("/get/:userId", isSignedIn, isAuthenticated, (req, res) => {

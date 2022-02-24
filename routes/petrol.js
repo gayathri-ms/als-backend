@@ -4,6 +4,7 @@ const {
   isSignedIn,
   getUserById,
 } = require("../controllers/auth");
+const MonthlyIncome = require("../models/monthlyIncome");
 const router = express.Router();
 
 const Petrol = require("../models/petrol");
@@ -22,6 +23,42 @@ router.post("/add_petrol/:userId", isSignedIn, isAuthenticated, (req, res) => {
   let total = rate * no_ltrs;
   let pre_km = 0;
   var maxi = 0;
+
+  MonthlyIncome.find({ month: month }).exec((err, data) => {
+    if (err) {
+      console.log("Failed to Update");
+    }
+    if (data.length) {
+      MonthlyIncome.findByIdAndUpdate(
+        { _id: data[0]._id },
+        {
+          $set: {
+            petrol: data[0].petrol + Number(total),
+            total: data[0].total - Number(total),
+          },
+        },
+        { new: true, useFindAndModify: false },
+        (err, data) => {
+          console.log(data);
+        }
+      );
+    } else {
+      let maxim = 0;
+      MonthlyIncome.find().exec((err, data) => {
+        if (err) console.log(err);
+        else data.map((d) => (d.invoice > maxim ? (maxim = d.invoice) : maxim));
+
+        const monthlyIncome = new MonthlyIncome({
+          invoice: maxim + 1,
+          petrol: total,
+          total: total,
+        });
+
+        monthlyIncome.save((err, d) => console.log(d));
+      });
+    }
+  });
+
   Petrol.find().exec((err, user) => {
     if (err) {
       return res.status(400).json({ error: "No user Found" });

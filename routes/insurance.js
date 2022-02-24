@@ -7,6 +7,7 @@ const {
 const router = express.Router();
 
 const Insurance = require("../models/insurance");
+const MonthlyIncome = require("../models/monthlyIncome");
 router.param("userId", getUserById);
 
 const datevalue = (val) => {
@@ -49,6 +50,43 @@ router.post(
     let pol_expire = datevalue(pollution_expire);
 
     var maxi = 0;
+
+    MonthlyIncome.find({ month: month }).exec((err, data) => {
+      if (err) {
+        console.log("Failed to Update");
+      }
+      if (data.length) {
+        MonthlyIncome.findByIdAndUpdate(
+          { _id: data[0]._id },
+          {
+            $set: {
+              insurance: data[0].insurance + Number(amount),
+              total: data[0].total - Number(amount),
+            },
+          },
+          { new: true, useFindAndModify: false },
+          (err, data) => {
+            console.log(data);
+          }
+        );
+      } else {
+        let maxim = 0;
+        MonthlyIncome.find().exec((err, data) => {
+          if (err) console.log(err);
+          else
+            data.map((d) => (d.invoice > maxim ? (maxim = d.invoice) : maxim));
+
+          const monthlyIncome = new MonthlyIncome({
+            invoice: maxim + 1,
+            insurance: amount,
+            total: amount,
+          });
+
+          monthlyIncome.save((err, d) => console.log(d));
+        });
+      }
+    });
+
     Insurance.find().exec((err, user) => {
       if (err) {
         return res.status(400).json({ error: "No user Found" });

@@ -8,6 +8,7 @@ const router = express.Router();
 
 const Loads = require("../models/loads");
 const Company = require("../models/company");
+const MonthlyIncome = require("../models/monthlyIncome");
 
 router.param("userId", getUserById);
 
@@ -65,6 +66,44 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
   var totalGst = Number(grandtotal) - Number(total);
 
   var balance = Number(grandtotal) - Number(amt_received);
+
+  MonthlyIncome.find({ month: month }).exec((err, data) => {
+    if (err) {
+      console.log("Failed to Update");
+    }
+    if (data.length) {
+      MonthlyIncome.findByIdAndUpdate(
+        { _id: data[0]._id },
+        {
+          $set: {
+            totalIncome: data[0].totalIncome + Number(grandtotal),
+            totalGst: data[0].totalGst + Number(totalGst),
+            total: data[0].total + Number(grandtotal),
+          },
+        },
+        { new: true, useFindAndModify: false },
+        (err, data) => {
+          console.log(data);
+        }
+      );
+    } else {
+      let maxim = 0;
+      let total = 0;
+      MonthlyIncome.find().exec((err, data) => {
+        if (err) console.log(err);
+        else data.map((d) => (d.invoice > maxim ? (maxim = d.invoice) : maxim));
+        total = total + Number(grandtotal);
+        const monthlyIncome = new MonthlyIncome({
+          invoice: maxim + 1,
+          totalIncome: grandtotal,
+          totalGst: totalGst,
+          total: grandtotal,
+        });
+
+        monthlyIncome.save((err, d) => console.log(d));
+      });
+    }
+  });
 
   Company.find({ company_name: company }).exec((err, data) => {
     console.log("data", data);

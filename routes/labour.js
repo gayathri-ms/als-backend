@@ -7,6 +7,7 @@ const {
 const router = express.Router();
 
 const Labour = require("../models/labour");
+const MonthlyIncome = require("../models/monthlyIncome");
 const MonthlySalary = require("../models/monthlySalary");
 
 router.param("userId", getUserById);
@@ -77,20 +78,18 @@ router.put("/updatedExtra/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const year = dateObj.getFullYear();
   const output = day + "-" + month + "-" + year;
 
-  const { l_id, salary, labour_name, adv_amt } = req.body;
+  const { l_id, salary, labour_name } = req.body;
 
   Labour.find().exec((err, data) => {
     let labours = data.filter((d) => d.l_id === l_id)[0];
     console.log("salary_work", labours.salary_work, "salary", salary);
     var sal = Number(labours.salary_work) - Number(salary);
-    var adv = Number(labours.adv_amt) - Number(adv_amt);
     console.log("sal", sal);
     Labour.findByIdAndUpdate(
       { _id: labours._id },
       {
         $set: {
           salary_work: sal,
-          adv_amt: adv,
         },
       },
       { new: true, useFindAndModify: false },
@@ -101,6 +100,42 @@ router.put("/updatedExtra/:userId", isSignedIn, isAuthenticated, (req, res) => {
         console.log("res", item);
       }
     );
+
+    MonthlyIncome.find({ month: month }).exec((err, data) => {
+      if (err) {
+        console.log("Failed to Update");
+      }
+      if (data.length) {
+        MonthlyIncome.findByIdAndUpdate(
+          { _id: data[0]._id },
+          {
+            $set: {
+              labourSalary: data[0].labourSalary + Number(salary),
+              total: data[0].total - Number(salary),
+            },
+          },
+          { new: true, useFindAndModify: false },
+          (err, data) => {
+            console.log(data);
+          }
+        );
+      } else {
+        let maxim = 0;
+        MonthlyIncome.find().exec((err, data) => {
+          if (err) console.log(err);
+          else
+            data.map((d) => (d.invoice > maxim ? (maxim = d.invoice) : maxim));
+
+          const monthlyIncome = new MonthlyIncome({
+            invoice: maxim + 1,
+            expenses: Number(salary),
+            total: Number(salary),
+          });
+
+          monthlyIncome.save((err, d) => console.log(d));
+        });
+      }
+    });
 
     let maxi = 0;
     MonthlySalary.find().exec((err, data) => {
@@ -115,7 +150,7 @@ router.put("/updatedExtra/:userId", isSignedIn, isAuthenticated, (req, res) => {
         dateformat: output,
         month: monthName[month - 1],
         month_no: month,
-        salary: Number(salary) + Number(adv_amt),
+        salary: Number(salary),
         l_id: l_id,
         labour_name: labour_name,
       });

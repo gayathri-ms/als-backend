@@ -4,6 +4,8 @@ const {
   isSignedIn,
   getUserById,
 } = require("../controllers/auth");
+
+const MonthlyIncome = require("../models/monthlyIncome");
 const router = express.Router();
 
 const Spares = require("../models/spares");
@@ -21,6 +23,43 @@ router.post("/addspare/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const year = date.getFullYear();
   const output = day + "-" + month + "-" + year;
   var maxi = 0;
+
+  MonthlyIncome.find({ month: month }).exec((err, data) => {
+    if (err) {
+      console.log("Failed to Update");
+    }
+    if (data.length) {
+      MonthlyIncome.findByIdAndUpdate(
+        { _id: data[0]._id },
+        {
+          $set: {
+            spares: data[0].spares + Number(rate),
+            total: data[0].total - Number(rate),
+          },
+        },
+        { new: true, useFindAndModify: false },
+        (err, data) => {
+          console.log(data);
+        }
+      );
+    } else {
+      let maxim = 0;
+      let total = 0;
+      MonthlyIncome.find().exec((err, data) => {
+        if (err) console.log(err);
+        else data.map((d) => (d.invoice > maxim ? (maxim = d.invoice) : maxim));
+
+        const monthlyIncome = new MonthlyIncome({
+          invoice: maxim + 1,
+          spares: rate,
+          total: rate,
+        });
+
+        monthlyIncome.save((err, d) => console.log(d));
+      });
+    }
+  });
+
   Spares.find().exec((err, user) => {
     if (err) {
       return res.status(400).json({ error: "No user Found" });
@@ -41,7 +80,7 @@ router.post("/addspare/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
     spares.save((err, l) => {
       if (err) {
-        return res.status(400).json({ error: "Error in the Spare Form" });
+        return res.status(400).json({ err: "Error in the Spare Form" });
       }
       res.json(l);
     });

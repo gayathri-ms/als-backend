@@ -6,6 +6,7 @@ const {
 } = require("../controllers/auth");
 
 const Expenses = require("../models/expenses");
+const MonthlyIncome = require("../models/monthlyIncome");
 const router = express.Router();
 
 router.param("userId", getUserById);
@@ -22,6 +23,41 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const output = day + "-" + month + "-" + year;
 
   var maxi = 0;
+
+  MonthlyIncome.find({ month: month }).exec((err, data) => {
+    if (err) {
+      console.log("Failed to Update");
+    }
+    if (data.length) {
+      MonthlyIncome.findByIdAndUpdate(
+        { _id: data[0]._id },
+        {
+          $set: {
+            expenses: data[0].expenses + Number(amount),
+            total: data[0].total - Number(amount),
+          },
+        },
+        { new: true, useFindAndModify: false },
+        (err, data) => {
+          console.log(data);
+        }
+      );
+    } else {
+      let maxim = 0;
+      MonthlyIncome.find().exec((err, data) => {
+        if (err) console.log(err);
+        else data.map((d) => (d.invoice > maxim ? (maxim = d.invoice) : maxim));
+
+        const monthlyIncome = new MonthlyIncome({
+          invoice: maxim + 1,
+          expenses: amount,
+          total: amount,
+        });
+
+        monthlyIncome.save((err, d) => console.log(d));
+      });
+    }
+  });
 
   Expenses.find().exec((err, data) => {
     if (err) {
