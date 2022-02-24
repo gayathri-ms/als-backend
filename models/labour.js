@@ -21,6 +21,7 @@ const labour_schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  aadhaar: String,
   phone: {
     type: String,
     required: true,

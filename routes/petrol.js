@@ -52,7 +52,7 @@ router.post("/add_petrol/:userId", isSignedIn, isAuthenticated, (req, res) => {
           invoice: maxim + 1,
           month: month,
           petrol: total,
-          total: total,
+          total: -1 * total,
         });
 
         monthlyIncome.save((err, d) => console.log(d));

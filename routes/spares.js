@@ -53,7 +53,7 @@ router.post("/addspare/:userId", isSignedIn, isAuthenticated, (req, res) => {
           invoice: maxim + 1,
           month: month,
           spares: rate,
-          total: rate,
+          total: -1 * rate,
         });
 
         monthlyIncome.save((err, d) => console.log(d));

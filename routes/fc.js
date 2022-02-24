@@ -64,7 +64,7 @@ router.post("/addFC/:userId", isSignedIn, isAuthenticated, (req, res) => {
           invoice: maxim + 1,
           month: month,
           fc: expenses,
-          total: expenses,
+          total: -1 * expenses,
         });
 
         monthlyIncome.save((err, d) => console.log(d));

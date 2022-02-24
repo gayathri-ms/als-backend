@@ -80,7 +80,7 @@ router.post(
             invoice: maxim + 1,
             month: month,
             insurance: amount,
-            total: amount,
+            total: -1 * amount,
           });
 
           monthlyIncome.save((err, d) => console.log(d));

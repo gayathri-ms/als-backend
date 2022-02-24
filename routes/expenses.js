@@ -52,7 +52,7 @@ router.post("/add/:userId", isSignedIn, isAuthenticated, (req, res) => {
           invoice: maxim + 1,
           month: month,
           expenses: amount,
-          total: amount,
+          total: -1 * amount,
         });
 
         monthlyIncome.save((err, d) => console.log(d));

@@ -36,8 +36,16 @@ router.post("/addlabour/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const year = dateObj.getFullYear();
   const output = day + "-" + month + "-" + year;
 
-  const { labour_name, l_id, address, adv_amt, advance, phone, salary } =
-    req.body;
+  const {
+    labour_name,
+    l_id,
+    address,
+    aadhaar,
+    adv_amt,
+    advance,
+    phone,
+    salary,
+  } = req.body;
 
   let maxi = 0;
 
@@ -53,6 +61,7 @@ router.post("/addlabour/:userId", isSignedIn, isAuthenticated, (req, res) => {
       l_id: l_id,
       labour_name: labour_name,
       address: address,
+      aadhaar: aadhaar,
       adv_amt: adv_amt,
       advance: advance,
       phone: phone,
@@ -130,7 +139,7 @@ router.put("/updatedExtra/:userId", isSignedIn, isAuthenticated, (req, res) => {
             invoice: maxim + 1,
             month: month,
             expenses: Number(salary),
-            total: Number(salary),
+            total: -1 * Number(salary),
           });
 
           monthlyIncome.save((err, d) => console.log(d));
