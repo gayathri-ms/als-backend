@@ -50,6 +50,7 @@ router.post("/add_petrol/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
         const monthlyIncome = new MonthlyIncome({
           invoice: maxim + 1,
+          month: month,
           petrol: total,
           total: total,
         });

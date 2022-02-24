@@ -128,6 +128,7 @@ router.put("/updatedExtra/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
           const monthlyIncome = new MonthlyIncome({
             invoice: maxim + 1,
+            month: month,
             expenses: Number(salary),
             total: Number(salary),
           });

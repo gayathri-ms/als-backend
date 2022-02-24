@@ -6,16 +6,46 @@ const monthlyIncome_schema = new mongoose.Schema({
     required: true,
   },
   month: Number,
-  totalIncome: Number,
-  totalGst: Number,
-  spares: Number,
-  diesel: Number,
-  petrol: Number,
-  labourSalary: Number,
-  insurance: Number,
-  fc: Number,
-  expenses: Number,
-  total: Number,
+  totalIncome: {
+    type: Number,
+    default: 0,
+  },
+  totalGst: {
+    type: Number,
+    default: 0,
+  },
+  spares: {
+    type: Number,
+    default: 0,
+  },
+  diesel: {
+    type: Number,
+    default: 0,
+  },
+  petrol: {
+    type: Number,
+    default: 0,
+  },
+  labourSalary: {
+    type: Number,
+    default: 0,
+  },
+  insurance: {
+    type: Number,
+    default: 0,
+  },
+  fc: {
+    type: Number,
+    default: 0,
+  },
+  expenses: {
+    type: Number,
+    default: 0,
+  },
+  total: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("monthlyIncome", monthlyIncome_schema);

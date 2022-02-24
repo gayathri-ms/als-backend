@@ -95,6 +95,7 @@ router.post("/addload/:userId", isSignedIn, isAuthenticated, (req, res) => {
         total = total + Number(grandtotal);
         const monthlyIncome = new MonthlyIncome({
           invoice: maxim + 1,
+          month: month,
           totalIncome: grandtotal,
           totalGst: totalGst,
           total: grandtotal,

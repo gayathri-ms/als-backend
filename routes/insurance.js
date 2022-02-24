@@ -78,6 +78,7 @@ router.post(
 
           const monthlyIncome = new MonthlyIncome({
             invoice: maxim + 1,
+            month: month,
             insurance: amount,
             total: amount,
           });

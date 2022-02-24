@@ -51,6 +51,7 @@ router.post("/addspare/:userId", isSignedIn, isAuthenticated, (req, res) => {
 
         const monthlyIncome = new MonthlyIncome({
           invoice: maxim + 1,
+          month: month,
           spares: rate,
           total: rate,
         });
