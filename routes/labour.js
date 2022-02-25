@@ -179,13 +179,14 @@ router.put(
   isSignedIn,
   isAuthenticated,
   (req, res) => {
-    const { l_id, adv_amt, labour_name } = req.body;
+    const { l_id, adv_amt, advance, labour_name } = req.body;
 
     Labour.find().exec((err, data) => {
       let labours = data.filter((d) => d.l_id === l_id)[0];
-
-      var adv = Number(labours.adv_amt) + Number(adv_amt);
-
+      var adv = 0;
+      if (advance === "yes") adv = Number(labours.adv_amt) + Number(adv_amt);
+      else if (advance === "no")
+        adv = Number(labours.adv_amt) - Number(adv_amt);
       Labour.findByIdAndUpdate(
         { _id: labours._id },
         {
