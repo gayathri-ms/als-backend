@@ -174,6 +174,37 @@ router.put("/updatedExtra/:userId", isSignedIn, isAuthenticated, (req, res) => {
   });
 });
 
+router.put(
+  "/updateAdvance/:userId",
+  isSignedIn,
+  isAuthenticated,
+  (req, res) => {
+    const { l_id, adv_amt, labour_name } = req.body;
+
+    Labour.find().exec((err, data) => {
+      let labours = data.filter((d) => d.l_id === l_id)[0];
+
+      var adv = Number(labours.adv_amt) + Number(adv_amt);
+
+      Labour.findByIdAndUpdate(
+        { _id: labours._id },
+        {
+          $set: {
+            adv_amt: adv,
+          },
+        },
+        { new: true, useFindAndModify: false },
+        (err, item) => {
+          if (err) {
+            return res.status(400).json({ err: "Not updated" });
+          }
+          res.json(item);
+        }
+      );
+    });
+  }
+);
+
 router.get("/getallLabour/:userId", isSignedIn, isAuthenticated, (req, res) => {
   Labour.find().exec((err, data) => {
     if (err) {
