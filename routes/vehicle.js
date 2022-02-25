@@ -10,7 +10,7 @@ const Vehicle = require("../models/vehicle");
 router.param("userId", getUserById);
 
 router.post("/addvehicle/:userId", isSignedIn, isAuthenticated, (req, res) => {
-  const date = new Date(req.body.date);
+  const date = new Date();
   var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
   const month = dateObj.getMonth() + 1;
