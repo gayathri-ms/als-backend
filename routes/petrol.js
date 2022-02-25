@@ -12,7 +12,7 @@ router.param("userId", getUserById);
 
 router.post("/add_petrol/:userId", isSignedIn, isAuthenticated, (req, res) => {
   const { rate, no_ltrs, vehicle_no, present_km } = req.body;
-  const date = new Date();
+  const date = new Date(req.body.date);
   // var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
   const month = date.getMonth() + 1;

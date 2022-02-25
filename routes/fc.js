@@ -22,7 +22,7 @@ const datevalue = (val) => {
 };
 
 router.post("/addFC/:userId", isSignedIn, isAuthenticated, (req, res) => {
-  const date = new Date();
+  const date = new Date(req.body.date);
   //var dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
   const month = date.getMonth() + 1;
